@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini Workspace | Vibe Coding</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="overlay" id="blurOverlay"></div>
+
+    <header>
+        <h1>Gemini Workspace</h1>
+        <p class="subtitle">Baza wiedzy: Prompty, Konfiguracje, Pro-tipy</p>
+    </header>
+
+    <main>
+        <div class="wiki-grid">
+
+            <article class="card">
+                <button class="close-btn" aria-label="Zamknij">&times;</button>
+                <div class="card-header"><span class="tag prompt">Prompt</span></div>
+                <h2 class="card-title">Code Review Assistant</h2>
+                <p class="card-desc">Bardzo długi opis, który zostanie zgrabnie ucięty z wielokropkiem na końcu. Prompt wymuszający na AI dokładną analizę kodu pod kątem bezpieczeństwa, zasad SOLID i ogólnej wydajności algorytmów. Idealny do wklejenia w system instructions w AI Studio.</p>
+                <div class="code-wrapper">
+                    <button class="copy-btn">Kopiuj</button>
+                    <div class="code-block">
+<code>Jesteś Senior Software Engineerem z 10-letnim doświadczeniem.
+Przeprowadź bezlitosne code review poniższego kodu.
+1. Wskaż luki bezpieczeństwa i zagrożenia.
+2. Zaproponuj refaktor pod kątem SOLID i DRY.
+3. Podaj przykłady poprawionego kodu.
+4. Zoptymalizuj złożoność czasową Big O.</code>
+                    </div>
+                </div>
+            </article>
+
+            <article class="card">
+                <button class="close-btn" aria-label="Zamknij">&times;</button>
+                <div class="card-header"><span class="tag config">Konfiguracja</span></div>
+                <h2 class="card-title">Gems: Creative Writer</h2>
+                <p class="card-desc">Ustawienia dla asystenta piszącego teksty marketingowe bez tak zwanego "AI-slangu" (unikanie utartych zwrotów i schematów).</p>
+                <div class="code-wrapper">
+                    <button class="copy-btn">Kopiuj</button>
+                    <div class="code-block">
+<code>Temperature: 0.7
+Top-K: 40
+System Instructions: 
+Jesteś copywriterem. Piszesz naturalnie, angażująco i zwięźle. 
+BEZWZGLĘDNIE ZABRONIONE SŁOWA: 
+"podsumowując", "istotne jest", "w dzisiejszych czasach", "zagłębmy się".</code>
+                    </div>
+                </div>
+            </article>
+
+            <article class="card">
+                <button class="close-btn" aria-label="Zamknij">&times;</button>
+                <div class="card-header"><span class="tag protip">Pro-tip</span></div>
+                <h2 class="card-title">Strukturyzowanie w JSON</h2>
+                <p class="card-desc">Najlepszy sposób na wymuszenie JSON-a. Jeśli chcesz, by model zawsze zwracał poprawny format, używaj składni TypeScript do zdefiniowania schematu interfejsu bezpośrednio w prompcie. Redukuje to halucynacje do zera.</p>
+                <div class="code-wrapper">
+                    <button class="copy-btn">Kopiuj</button>
+                    <div class="code-block">
+<code>Zwróć dane WYŁĄCZNIE w formacie zminifikowanego JSON.
+Format musi być ściśle zgodny z poniższym interfejsem:
+
+interface ResponseData {
+  title: string;
+  tags: string[];
+  confidenceScore: number;
+  metadata: {
+    author: string;
+    timestamp: string;
+  }
+}</code>
+                    </div>
+                </div>
+            </article>
+
+        </div>
+    </main>
+
+    <footer>
+        <p>Built with precision &middot; Vibe Coding Hub</p>
+    </footer>
+
+    <script>
+        const overlay = document.getElementById('blurOverlay');
+
+        function closeActiveCard() {
+            const activeCard = document.querySelector('.card.expanded');
+            if (activeCard) {
+                activeCard.classList.remove('expanded');
+                overlay.classList.remove('active');
+                document.body.classList.remove('modal-open');
+            }
+        }
+
+        document.querySelectorAll('.card').forEach(card => {
+            card.addEventListener('click', function(e) {
+                if (e.target.closest('.copy-btn') || e.target.closest('.close-btn')) return;
+
+                if (!this.classList.contains('expanded')) {
+                    this.classList.add('expanded');
+                    overlay.classList.add('active');
+                    document.body.classList.add('modal-open');
+                }
+            });
+        });
+
+        document.querySelectorAll('.close-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation(); 
+                closeActiveCard();
+            });
+        });
+
+        overlay.addEventListener('click', closeActiveCard);
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeActiveCard();
+        });
+
+        document.querySelectorAll('.copy-btn').forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.stopPropagation(); 
+                const codeBlock = button.nextElementSibling.querySelector('code');
+                const textToCopy = codeBlock.innerText;
+
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    const originalText = button.innerText;
+                    button.innerText = 'Skopiowano!';
+                    button.classList.add('copied');
+
+                    setTimeout(() => {
+                        button.innerText = originalText;
+                        button.classList.remove('copied');
+                    }, 2000);
+                }).catch(err => {
+                    console.error('Błąd kopiowania: ', err);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
